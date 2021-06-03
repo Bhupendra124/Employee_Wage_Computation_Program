@@ -1,7 +1,6 @@
-#!/bin/bash
+#!/bin/bash -x
+
 empRatePerHr=20
-empFullTimeHrs=8
-empPartTimeHrs=4
 numberOfWorkingDays=20
 maxHrsInMonth=100
 
@@ -9,23 +8,7 @@ totalSalary=0
 totalEmpHr=0
 totalWorkingDays=0
 
-attendance_check=$(( RANDOM%2 ))
-
-if [[ $attendance_check -eq 1 ]]
-then
-	echo employee is present
-	salary=$(( $empRatePerHr * $empFullTimeHrs ))
-	halfSalary=$(( $empRatePerHr * $empPartTimeHrs ))
-else
-	echo employee is absent
-	salary=0
-	halfSalary=0
-fi
-
-
-while [[ $totalEmpHr -lt $maxHrsInMonth && $totalWorkingDays -lt $numberOfWorkingDays ]]
-do
-	(( totalWorkingDays++ ))
+function getWorkingHours() {
 	empCheck=$(( RANDOM%3 + 1 ))
 	case $empCheck in
 		1)
@@ -38,13 +21,17 @@ do
 		empHrs=0
 		;;
 	esac
+	echo $empHrs
+}
 
-	totalEmpHr=$(( $totalEmpHr + $empHrs ))
+while [[ $totalEmpHr -lt $maxHrsInMonth && $totalWorkingDays -lt $numberOfWorkingDays ]]
+do
+	(( totalWorkingDays++ ))
+	workingHours="$( getWorkingHours )"
+	totalWorkHrs=$(( $totalEmpHr + $workingHours ))
 done
+	echo $totalWorkHrs
 
-	totalSalary=$(( $totalEmpHr * $empRatePerHr ))
+	totalSalary=$(( $totalWorkHrs * $empRatePerHr ))
 
-
-echo "salary of an employee:" $salary
-echo "part time salary of an employee:" $halfSalary
-echo "Calculated wages of total hours or days for a month :" $totalSalary
+echo "Calculated wages of total hours or number of days is reached for a month :" $totalSalar
